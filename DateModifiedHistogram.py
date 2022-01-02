@@ -26,7 +26,7 @@ def parse_file(file_path):
 # Returns an array of epoch times from files in data_dir
 def parse_folder(data_dir): 
 	# print("Parsing folder: " + str(data_dir))
-	filesArr = os.listdir(data_dir)
+	files_arr = os.listdir(data_dir)
 
 	folder_times = [] 
 
@@ -75,15 +75,15 @@ def generate_histogram(data_dir, folder_times):
 
 	file_hours = np.array(file_seconds) / sec_in_hour
 
-	print("file_hours: " + str(file_hours))
+	# print("file_hours: " + str(file_hours))
 
 	num_bins = 23
 	n, bins, patches = plt.hist(file_hours, num_bins)
-	print("n: " + str(n))
-	print("len n: " + str(len(n)))
-	print("bins: " + str(bins))
-	print("len bins: " + str(len(bins)))
-	print("patches: " + str(patches))
+	# print("n: " + str(n))
+	# print("len n: " + str(len(n)))
+	# print("bins: " + str(bins))
+	# print("len bins: " + str(len(bins)))
+	# print("patches: " + str(patches))
 	plt.xlabel('Hour of the day')
 	plt.ylabel('Occurrences')
 	plt.title(folder_name)
@@ -92,13 +92,23 @@ def generate_histogram(data_dir, folder_times):
 
 
 # --- Declarations --- 
-dataDir = askdirectory()
-
+data_dir = askdirectory()
+folder_name = os.path.basename(data_dir)
 
 # --- Main Code ---
-folder_times = parse_folder(dataDir) 
-print("folder_times for folder '" + dataDir + "' = " + str(len(folder_times)))
+
+# Analyze selected folder to get modification times of files
+folder_times = parse_folder(data_dir) 
+print("Number of files analyzed in the folder '" + data_dir + "' = " + str(len(folder_times)) + " files")
 # print("folder_times values: " + str(folder_times))
 
-generate_histogram(dataDir, folder_times)
+# Save file modification times to .csv file
+csv_filename = folder_name + ".csv"
+print("Writing dates modified to file: " + csv_filename)
+np.savetxt(csv_filename, folder_times, delimiter=",")
+print("HINT: To convert the csv values to something Excel can decipher:")
+print("      =A1/(24*60*60) + DATE(1970,1,1)")
+
+# Plot histogram
+generate_histogram(data_dir, folder_times)
 
