@@ -1,8 +1,8 @@
-# About: Creates multiple histograms based on when your files were modified
-# Author: Matt Popovich
+# About: Displays a 24hr histogram based on when the files in the folder 
+# 		 selected were modified
+# Author: Matt Popovich (https://mattpopovich.com/)
 # Date Created: December 23, 2019
 # Tested Python Version: 3.7.4
-
 
 
 # --- Imports ---
@@ -11,6 +11,8 @@ import time
 import datetime 
 import matplotlib.pyplot as plt
 import numpy as np
+
+from tkinter.filedialog import askdirectory
 
 
 # --- Functions ---
@@ -21,15 +23,12 @@ def parse_file(file_path):
 	return file_epoch
 
 
-
-# Returns an array of epoch times from files in folder, produce histograms 
+# Returns an array of epoch times from files in data_dir
 def parse_folder(data_dir): 
 	# print("Parsing folder: " + str(data_dir))
 	filesArr = os.listdir(data_dir)
 
 	folder_times = [] 
-
-
 
 	for file_name in os.listdir(data_dir):
 		if file_name[0] == '.':
@@ -51,12 +50,9 @@ def parse_folder(data_dir):
 
 		new_dir = False
 
-	generate_histogram(data_dir, folder_times)
-	print("folder_times for folder '" + data_dir + "' = " + str(len(folder_times)))
-	# print("folder_times values: " + str(folder_times))
 	return folder_times
 
-
+# Plots histogram given numpy array of epoch times in folder_times
 def generate_histogram(data_dir, folder_times):
 	folder_name = os.path.basename(data_dir)
 
@@ -95,22 +91,14 @@ def generate_histogram(data_dir, folder_times):
 	plt.show()
 
 
-
-
-
-
 # --- Declarations --- 
-# dataDir = '/Volumes/FAT32_4/2019 TrailCam/test'
-# dataDir = '/Users/mattpopovich/Desktop/2019 TrailCam/test'
-dataDir = '/Users/mattpopovich/Desktop/2019 TrailCam'
+dataDir = askdirectory()
 
 
 # --- Main Code ---
-parse_folder(dataDir) 
+folder_times = parse_folder(dataDir) 
+print("folder_times for folder '" + dataDir + "' = " + str(len(folder_times)))
+# print("folder_times values: " + str(folder_times))
 
-
-
-		
-
-
+generate_histogram(dataDir, folder_times)
 
